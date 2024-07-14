@@ -53,6 +53,9 @@ export PATH=$PATH:$GOPATH/bin
 # ENVIRONMENT VARIABLES
 # =============================================================================
 
+
+export CARGO_MAKE_HOME="$HOME/.cargo-make"
+
 export HOMEBREW_NO_ANALYTICS=1
 # Manpages path
 export MANPATH="/usr/local/share/man:$MANPATH"
@@ -245,6 +248,8 @@ alias grbsign="git rebase --exec 'git commit --amend --no-edit -n -S' -i"
 alias ggpush='git push -u origin $(git_current_branch)'
 alias bgrep='/usr/bin/grep --color=auto --exclude-dir={.bzr,CVS,.git,.hg,.svn}'
 alias htop='btm'
+alias golint='golangci-lint'
+alias ai='ollama run'
 
 # ===============================================
 # VERSION MANAGERS

@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+# Import necessary libraries
+import sys
+from pathlib import Path
+
+# Read the directory path from command line argument
+directory_path = sys.argv[1]
+
+# Initialize dictionary to store activity types and their count
+activity_types = {}
+
+# Iterate through all files in the given directory
+for file in Path(directory_path).iterdir():
+    # Check if the file extension is ".gpx"
+    if file.suffix == ".gpx":
+        # Get the file name without extension
+        file_name = file.stem
+
+        # Extract the activity type from the file name
+        activity_type = file_name.split("-")[4]
+
+        # Update the count of activity types in our dictionary
+        if activity_type not in activity_types:
+            activity_types[activity_type] = 1
+        else:
+            activity_types[activity_type] += 1
+
+# Pretty print the table with activity types and their counts
+print("Activity Type" + "|" + "Count")
+for activity_type, count in activity_types.items():
+    print(f"{activity_type: <20}| {count}")
