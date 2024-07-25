@@ -710,7 +710,20 @@ lvim.plugins                       = {
     end
   },
 
-  --- LSP PLUGINS
+  -- LSP PLUGINS
+
+  -- Make sure to run :Lazy load copilot-cmp followed by :Copilot auth once the plugin is installed to start the authentication process.
+  {
+    "zbirenbaum/copilot-cmp",
+    event = "InsertEnter",
+    dependencies = { "zbirenbaum/copilot.lua" },
+    config = function()
+      vim.defer_fn(function()
+        require("copilot").setup()     -- https://github.com/zbirenbaum/copilot.lua/blob/master/README.md#setup-and-configuration
+        require("copilot_cmp").setup() -- https://github.com/zbirenbaum/copilot-cmp/blob/master/README.md#configuration
+      end, 100)
+    end,
+  },
 
   -- UTILITIES AND KEYS
   { "tpope/vim-surround" },
