@@ -33,6 +33,8 @@ export PATH=$PATH:/opt/homebrew/bin
 export PATH=$PATH:/usr/local/bin
 export PATH=$PATH:/usr/local/sbin
 export PATH=$PATH:/usr/local/MacGPG2/bin
+# Ruby
+export PATH=$HOME/.rbenv/bin:$PATH
 # Pyenv
 export PYENV_ROOT="$HOME/.pyenv"
 export PATH="$PYENV_ROOT/bin:$PATH"
@@ -48,12 +50,12 @@ export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 # $GOPATH/bin
 export PATH=$PATH:$GOPATH/bin
-
+# TDD
+export PATH=$PATH:$HOME/code/professional/tdna/tdd-tools
+export PATH=$PATH:/Users/CASE/code/professional/tdna/tdd-tools/modules/tdd-toolbox
 # =============================================================================
 # ENVIRONMENT VARIABLES
 # =============================================================================
-
-
 export CARGO_MAKE_HOME="$HOME/.cargo-make"
 
 export HOMEBREW_NO_ANALYTICS=1
@@ -84,7 +86,7 @@ export PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/l
 
 # SSH Find Agent Script
 # https://github.com/wwalker/ssh-find-agent/blob/master/ssh-find-agent.sh
-source $HOME/.scripts/ssh-find-agent.sh
+# source $HOME/.scripts/ssh-find-agent.sh
 
 # Source scripts found in dotfiles/scripts (symlinked to $HOME/.scripts/)h
 
@@ -179,7 +181,9 @@ source $ZSH/oh-my-zsh.sh
 # Add all functions in ~/.functions to system path
 export PATH="$HOME/.functions:$PATH"
 
-ssh_find_agent --auto
+export SSH_AUTH_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# ssh_find_agent --auto
 if [ -z "$SSH_AUTH_SOCK" ]
 then
    eval $(ssh-agent) > /dev/null
@@ -337,3 +341,8 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 if [ "$(uname -m)" != "arm64" ]; then
   env arch -arm64 /bin/zsh --login
 fi
+
+export GPG_TTY=$(tty)
+
+# Initialize rbenv
+eval "$(rbenv init -)"

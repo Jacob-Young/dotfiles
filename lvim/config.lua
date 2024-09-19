@@ -226,7 +226,7 @@ lvim.builtin.indentlines.options.filetype_exclude = {
   "nofile",
   "packer",
   "alpha",
-  "NvimTree",
+  -- "NvimTree",
   "lsp-installer",
   "lspinstaller",
   "lsp-info",
@@ -613,6 +613,9 @@ vim.g.minimap_block_filetypes      = ignore_filetypes
 vim.g.minimap_block_buftypes       = ignore_filetypes
 vim.g.minimap_close_filetypes      = ignore_filetypes
 vim.g.minimap_close_buftypes       = ignore_filetypes
+
+
+vim.g.ruby_host_prog               = "/Users/CASE/.rbenv/version/3.2.2/bin/ruby"
 ----------------------------------------------------------------
 -- ADDITIONAL PLUGINS
 ----------------------------------------------------------------
