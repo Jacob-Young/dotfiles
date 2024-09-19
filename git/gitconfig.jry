@@ -1,6 +1,6 @@
 [user]
   name = "Jacob Young"
   email = jacob@jry.io
-  signingkey= 715CED2327899E28
+  signingkey = 715CED2327899E28
 [difftool "icdiff"]
   cmd = icdiff --line-numbers $LOCAL $REMOTE

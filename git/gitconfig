@@ -2,6 +2,8 @@
   path = ~/.gitconfig.active
 [includeIf "gitdir:~/go/src/git.zoom.us/"]
   path = ~/.gitconfig.zed
+[includeIf "gitdir:~/code/professional/zigg/"]
+  path = ~/.gitconfig.zigg
 [gpg]
   program = gpg
 [commit]
@@ -16,7 +18,7 @@
 [credential]
   helper = osxkeychain
 [push]
-  defualt = simple
+  default = simple
 [pull]
   rebase = true
 [alias]
@@ -31,3 +33,5 @@
   difftool = true
 [url "git@git.zoom.us:"]
 	insteadOf = https://git.zoom.us
+[url "git@github.com:"]
+	insteadOf = https://github.com/
