@@ -50,6 +50,7 @@
     ~/.gitconfig.keybase: git/gitconfig.keybase
     ~/.gitconfig.zed: git/gitconfig.zed
     ~/.gitconfig.jry: git/gitconfig.jry
+    ~/.gitconfig.zigg: git/gitconfig.zigg
 
 - link:
     ~/.functions: functions

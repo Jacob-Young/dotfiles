@@ -18,6 +18,7 @@
 - link: # Need Brewfile before running `brew bundle`
     ~/.Brewfile: brewfiles/personal.brewfile # This is the global brewfile
     ~/.gitconfig.active: git/gitconfig.jry
+    ~/.gitconfig.zigg: git/gitconfig.zigg
     ~/.local/bin/lvim:
       force: true
       create: true
