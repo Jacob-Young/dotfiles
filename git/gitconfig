@@ -34,4 +34,5 @@
 [url "git@git.zoom.us:"]
 	insteadOf = https://git.zoom.us
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+  insteadOf = https://github.com
+  insteadOf = http://github.com

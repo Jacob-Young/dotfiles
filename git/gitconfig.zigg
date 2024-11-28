@@ -1,6 +1,6 @@
 [user]
 	name = "Jacob Young"
-	email = jacob.young@zigguratum.com
+	email = jacob.young@ziggiz.ai
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEnINOEEW6WoY3Fmbb/gwMDThV+bKjaB9TK0kO0WybT8
 [gpg]
   format = ssh
@@ -10,3 +10,5 @@
   gpgsign = true
 [difftool "icdiff"]
   cmd = /opt/homebrew/bin/icdiff --line-numbers $LOCAL $REMOTE
+[url "git@github.com:"]
+	insteadOf = https://github.com/
