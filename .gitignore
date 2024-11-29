@@ -15,3 +15,5 @@ nvim/.netrwhist
 examples/
 lvim/plugin/packer_compiled.*
 lvim/session
+op.sh
+shell/op/sh

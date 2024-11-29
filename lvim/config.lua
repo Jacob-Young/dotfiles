@@ -1,4 +1,6 @@
 --------------------------------------------------------------
+---
+-- CONFIG
 --------------------------------------------------------------
 --[[
 lvim is the global options object
@@ -320,9 +322,9 @@ lvim.builtin.which_key.mappings["t"] = {
 }
 
 -- Vim Accordion
-lvim.builtin.which_key.mappings["a"] = {
+lvim.builtin.which_key.mappings["v"] = {
   name = "+Accordion",
-  a = { "<cmd>Accordion 3<cr>", "Start" },
+  v = { "<cmd>Accordion 3<cr>", "Start" },
   s = { "<cmd>AccordionStop<cr>", "Stop" },
   ["4"] = { "<cmd>Accordion 4<cr>", "Accordion 4" },
   ["+"] = { "<cmd>AccordionZoomIn<cr>", "Zoom In <size + 1>" },
@@ -335,6 +337,66 @@ lvim.builtin.which_key.mappings["S"] = {
   r = { "<cmd>lua require('persistence').load()<cr>", "Restore last session for current dir" },
   R = { "<cmd>lua require('persistence').load({ last = true })<cr>", "Restore last session" },
   Q = { "<cmd>lua require('persistence').stop()<cr>", "Quit without saving session" },
+}
+
+-- Avante.nvim
+-- prefil edit window with common scenarios to avoid repeating query and submit immediately
+local prefill_edit_window = function(request)
+  require('avante.api').edit()
+  local code_bufnr = vim.api.nvim_get_current_buf()
+  local code_winid = vim.api.nvim_get_current_win()
+  if code_bufnr == nil or code_winid == nil then
+    return
+  end
+  vim.api.nvim_buf_set_lines(code_bufnr, 0, -1, false, { request })
+  -- Optionally set the cursor position to the end of the input
+  vim.api.nvim_win_set_cursor(code_winid, { 1, #request + 1 })
+  -- Simulate Ctrl+S keypress to submit
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-s>', true, true, true), 'v', true)
+end
+
+local avante_grammar_correction =
+'Correct the text to standard English, fix all typos, keep any code blocks inside intact without modification.'
+local avante_keywords = 'Extract the main keywords from the following text'
+local avante_code_readability_analysis = [[
+  You must identify any readability issues in the code snippet.
+  Some readability issues to consider:
+  - Unclear naming
+  - Unclear purpose
+  - Redundant or obvious comments
+  - Lack of comments
+  - Long or complex one liners
+  - Too much nesting
+  - Long variable names
+  - Inconsistent naming and code style.
+  - Code repetition
+  You may identify additional problems. The user submits a small section of code from a larger file.
+  Only list lines with readability issues, in the format <line_num>|<issue and proposed solution>
+  If there's no issues with code respond with only: <OK>
+]]
+local avante_optimize_code = 'Optimize the following code'
+local avante_summarize = 'Summarize the following text'
+local avante_explain_code = 'Explain the following code'
+local avante_complete_code = 'Complete the following codes written in ' .. vim.bo.filetype
+local avante_add_docstring = 'Add docstring to the following codes'
+local avante_fix_bugs = 'Fix the bugs inside the following codes if any'
+local avante_add_tests = 'Implement tests for the following code'
+
+lvim.builtin.which_key.mappings["a"] = { -- normal mode
+  name = "+AI",
+  a = { "<cmd>AvanteToggle<cr>", "Ask / Toggle" },
+  k = { "<cmd>AvanteClear<cr>", "Clear" },
+  p = { function()
+    vim.ui.input({ prompt = "Provider: " }, function(input)
+      if input then
+        vim.cmd("AvanteSwitchProvider " .. input)
+      end
+    end)
+  end, "Provider" }
+}
+lvim.builtin.which_key.vmappings["a"] = { -- visual mode
+  name = "+AI",
+  e = { "<cmd>AvanteEdit<cr>", "Edit" },
 }
 
 ----------------------------------------------------------------
@@ -809,6 +871,174 @@ lvim.plugins                       = {
     config = function()
       require "octo".setup()
     end
+  },
+
+  -- AI
+  {
+    "yetone/avante.nvim",
+    event = "VeryLazy",
+    lazy = false,
+    version = false, -- set this to true if you want to always pull the latest change
+    config = function()
+      -- MODIFICATION @JRY
+      --
+      -- This setup was requird to force the reloading of the native libraries
+      -- which avante uses
+      --
+      -- See this github comment: https://github.com/yetone/avante.nvim/issues/612#issuecomment-2401169692
+      require('avante_lib').load()
+      require('avante').setup(
+        {
+          provider = "claude",
+          auto_suggestions_provider = "copilot",
+          claude = {
+            api_key_name = { "op",
+              "item",
+              "get",
+              "2oxvera3ak3no5b2usvciuwnim",
+              "--vault",
+              "ifpq6udm2wag2mo3ipcoiu666e",
+              "--fields",
+              "credential",
+              "--reveal",
+            },
+            endpoint = "https://api.anthropic.com",
+            model = "claude-3-5-sonnet-20241022",
+            temperature = 0,
+            max_tokens = 4096,
+          },
+          behaviour = {
+            auto_suggestions = false, -- Experimental stage
+            auto_set_highlight_group = true,
+            auto_set_keymaps = true,
+            auto_apply_diff_after_generation = false,
+            support_paste_from_clipboard = false,
+            minimize_diff = true, -- Whether to remove unchanged lines when applying a code block
+          },
+          hints = { enabled = true },
+          windows = {
+            ---@type "right" | "left" | "top" | "bottom"
+            position = "right", -- the position of the sidebar
+            wrap = true,        -- similar to vim.o.wrap
+            width = 30,         -- default % based on available width
+            sidebar_header = {
+              enabled = true,   -- true, false to enable/disable the header
+              align = "center", -- left, center, right for title
+              rounded = true,
+            },
+            input = {
+              prefix = "> ",
+              height = 8, -- Height of the input window in vertical layout
+            },
+            edit = {
+              border = "rounded",
+              start_insert = true, -- Start insert mode when opening the edit window
+            },
+            ask = {
+              floating = false,    -- Open the 'AvanteAsk' prompt in a floating window
+              start_insert = true, -- Start insert mode when opening the ask window
+              border = "rounded",
+              ---@type "ours" | "theirs"
+              focus_on_apply = "ours", -- which diff to focus after applying
+            },
+          },
+          mappings = { --- @class AvanteConflictMappings
+            diff = {
+              ours = "co",
+              theirs = "ct",
+              all_theirs = "ca",
+              both = "cb",
+              cursor = "cc",
+              -- next = "]x",
+              -- prev = "[x",
+              next = "<C-n>",
+              prev = "<C-p>",
+
+            },
+            suggestion = {
+              -- accept = "<M-l>",
+              next = "<M-]>",
+              prev = "<M-[>",
+              dismiss = "<C-]>",
+            },
+            jump = {
+              next = "]]",
+              prev = "[[",
+            },
+            submit = {
+              normal = "<CR>",
+              insert = "<C-s>",
+            },
+            sidebar = {
+              apply_all = "A",
+              apply_cursor = "a",
+              switch_windows = "<Tab>",
+              reverse_switch_windows = "<S-Tab>",
+            },
+          },
+          highlights = {
+            ---@type AvanteConflictHighlights
+            diff = {
+              current = "DiffText",
+              incoming = "DiffAdd",
+            },
+          },
+          --- @class AvanteConflictUserConfig
+          diff = {
+            autojump = true,
+            ---@type string | fun(): any
+            list_opener = "copen",
+            --- Override the 'timeoutlen' setting while hovering over a diff (see :help timeoutlen).
+            --- Helps to avoid entering operator-pending mode with diff mappings starting with `c`.
+            --- Disable by setting to -1.
+            override_timeoutlen = 500,
+          },
+          -- add any opts here
+        }
+      )
+      require('copilot').setup({
+        -- your config
+      })
+    end,
+    opts = {
+    },
+    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
+    build = "make BUILD_FROM_SOURCE=true",
+    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "stevearc/dressing.nvim",
+      "nvim-lua/plenary.nvim",
+      "MunifTanjim/nui.nvim",
+      --- The below dependencies are optional,
+      "nvim-tree/nvim-web-devicons", -- or echasnovski/mini.icons
+      "zbirenbaum/copilot.lua",      -- for providers='copilot'
+      {
+        -- support for image pasting
+        "HakonHarnes/img-clip.nvim",
+        event = "VeryLazy",
+        opts = {
+          -- recommended settings
+          default = {
+            embed_image_as_base64 = false,
+            prompt_for_file_name = false,
+            drag_and_drop = {
+              insert_mode = true,
+            },
+            -- required for Windows users
+            -- use_absolute_path = true,
+          },
+        },
+      },
+      {
+        -- Make sure to set this up properly if you have lazy=true
+        'MeanderingProgrammer/render-markdown.nvim',
+        opts = {
+          file_types = { "markdown", "Avante" },
+        },
+        ft = { "markdown", "Avante" },
+      },
+    },
   }
 
 }

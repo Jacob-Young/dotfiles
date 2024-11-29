@@ -90,6 +90,8 @@ export PKG_CONFIG_PATH=$HOME/local/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/l
 
 # Source scripts found in dotfiles/scripts (symlinked to $HOME/.scripts/)h
 
+source $HOME/dotfiles/shell/op.sh
+
 # =============================================================================
 # ZSH THEME
 # =============================================================================
